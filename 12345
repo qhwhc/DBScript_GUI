@@ -1,1 +1,0 @@
-DELETE FROM testt1 WHERE ID='1' and NAME='张三'  ;INSERT INTO testt1 (SEX,ID,NAME) VALUES ('男','1','张三');DELETE FROM testt1 WHERE ID='1' and NAME='张三'  ;UPDATE testt1 SET SEX='男',ID='1',NAME='张三' WHERE ID='1' and NAME='张三'  ;

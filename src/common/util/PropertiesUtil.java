@@ -1,5 +1,7 @@
 package common.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,8 +25,10 @@ public class PropertiesUtil {
 		// 创建配置对象
 		InputStream is = null;
 		try {
-			is = PropertiesUtil.class.getClassLoader().getResourceAsStream(
-					"jdbc.properties");
+			File file = new File("config/jdbc.properties");
+			is = new FileInputStream(file);	
+//			is = PropertiesUtil.class.getClassLoader().getResourceAsStream(
+//					"jdbc.properties");
 			p.load(is);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -66,7 +70,7 @@ public class PropertiesUtil {
         p.setProperty(key, value);   
         // 文件输出流   
         try {  
-            FileOutputStream fos = new FileOutputStream("/UTools/src/jdbc.properties");   
+            FileOutputStream fos = new FileOutputStream("config/jdbc.properties");   
             // 将Properties集合保存到流中   
             p.store(fos, "Copyright (c) Boxcode Studio");
             fos.flush();
