@@ -33,7 +33,7 @@ public class FileUtil {
 			encoding = System.getProperty("file.encoding");
 			/*解码成指定字符*/
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}finally {
 			try {
 				if(fileChannel != null) {
@@ -43,7 +43,7 @@ public class FileUtil {
 					fileInputStream.close();
 				}
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				throw new RuntimeException(e2.getMessage());
 			}
 			
 		}
@@ -68,7 +68,7 @@ public class FileUtil {
 	        channel.close();
 	        outputStream.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}finally {
 			try {
 				if(channel != null) {
@@ -78,7 +78,7 @@ public class FileUtil {
 					outputStream.close();
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				throw new RuntimeException(e.getMessage());
 			}
 		}
 		 

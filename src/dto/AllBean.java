@@ -65,4 +65,5 @@ public class AllBean {
 	        BeanMap beanMap = BeanMap.create(obj);
 	        beanMap.put(property, value);
 	    }
+
 }

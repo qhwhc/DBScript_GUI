@@ -75,7 +75,7 @@ public class DbDaoImpl implements DbDao {
 		        objs.add(object);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		} finally {
 			DBConnUtil.close(dBConnUtil);
 		}
@@ -92,7 +92,7 @@ public class DbDaoImpl implements DbDao {
 				primaryKeys.add(resultSet.getString("COLUMN_NAME"));
 			};
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		} finally {
 			DBConnUtil.close(dBConnUtil);
 		}
@@ -107,10 +107,18 @@ public class DbDaoImpl implements DbDao {
 			ResultSet resultSet = DBConnUtil.executeQuery(dBConnUtil, columnSql,DBConnUtil.getParamList(tableName.toUpperCase()));
 //			…Ë÷√◊÷∂Œ Ù–‘
 			while(resultSet.next()) {
-				 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
+				if("VARCHAR2".equals(resultSet.getObject("data_type"))) {
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
+				}else if("NUMBER".equals(resultSet.getObject("data_type"))){
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DECIMAL"));
+				}else if("DATE".equals(resultSet.getObject("data_type"))) {
+					properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DATE"));
+				}else {
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
+				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		} finally {
 			DBConnUtil.close(dBConnUtil);
 		}

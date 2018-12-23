@@ -1,6 +1,8 @@
 package common.util;
 
 import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -43,4 +45,60 @@ public class AllBeanUtil {
         }
 		return map;
     };
+    
+//    根据数据库表创建出映射关系
+	public static Map<Object, Class<?>> createAllbeanProperties(String tableName) {
+		DBConnUtil dBConnUtil = DBConnUtil.init();
+		Map<Object, Class<?>> properties = new HashMap<Object, Class<?>>();
+		String columnSql = "select t1.column_name,t2.comments,t1.data_length,t1.data_type,t1.data_scale from user_tab_columns t1 join user_col_comments t2 on t1.table_name = t2.table_name and t1.column_name = t2.column_name where t1.table_name = ?";
+		try {
+			ResultSet resultSet = DBConnUtil.executeQuery(dBConnUtil, columnSql,DBConnUtil.getParamList(tableName.toUpperCase()));
+//			设置字段属性
+			while(resultSet.next()) {
+				if("VARCHAR2".equals(resultSet.getObject("data_type"))) {
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
+				}else if("NUMBER".equals(resultSet.getObject("data_type"))){
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DECIMAL"));
+				}else if("DATE".equals(resultSet.getObject("data_type"))) {
+					properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DATE"));
+				}else {
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			DBConnUtil.close(dBConnUtil);
+		}
+		return properties;
+	}
+	
+	public static Map<Object, Class<?>> createAllBeanBySql(String sql){
+		DBConnUtil dBConnUtil = DBConnUtil.init();
+		Map<Object, Class<?>> properties = new HashMap<Object, Class<?>>();
+		try {
+			ResultSet resultSet = DBConnUtil.executeQuery(dBConnUtil, sql,null);
+//			设置字段属性
+			int columns = resultSet.getMetaData().getColumnCount();
+			ResultSetMetaData metaData = resultSet.getMetaData();
+			for (int i = 0; i < columns; i++) {
+				 properties.put(metaData.getColumnName(i + 1), Class.forName("java.lang.String"));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e.getMessage());
+		} finally {
+			DBConnUtil.close(dBConnUtil);
+		}
+		return properties;
+	};
+	
+	public static String allBeanToString(Object allbean) {
+		StringBuilder str = new StringBuilder();
+		Field[] fields = allbean.getClass().getDeclaredFields();
+        for(Field field : fields) {
+        	String key = getRealName(field.getName());
+        	str.append(key + "=" + getValue(allbean,key) + "\t");
+        }
+		return str.length() > 0 ? str.delete(str.lastIndexOf("\t"), str.lastIndexOf("\t") + 2).toString() : "";
+	}
 }

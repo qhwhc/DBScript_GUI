@@ -5,12 +5,22 @@
  */
 package controller.components;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JOptionPane;
 
+import common.util.ExcelUtil;
 import common.util.PropertiesUtil;
 import controller.util.UiUtil;
 import service.DBScriptOutputSevice;
+import service.ExcelService;
 import service.impl.DBScriptOutputSeviceImpl;
+import service.impl.ExcelServiceImpl;
 
 /**
  *
@@ -18,6 +28,8 @@ import service.impl.DBScriptOutputSeviceImpl;
  */
 public class MainFrame extends javax.swing.JFrame {
 	private DBScriptOutputSevice dbScriptOutputSevice = new DBScriptOutputSeviceImpl();
+	private ExcelService excelService = new ExcelServiceImpl();
+	private DateFormat format= new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");   
 	private static final long serialVersionUID = 1L;
 	/**
      * Creates new form NewJFrame
@@ -26,11 +38,13 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         init();
     }
-
     public void init() {
+    	this.setResizable(false);
     	UiUtil.setFrameCenter(this);
     	UiUtil.setFrameCenter(fileOutDialog);
     	UiUtil.setFrameCenter(dbSettingDialog);
+    	UiUtil.setFrameCenter(outExcelDialog);
+    	UiUtil.setFrameCenter(inExcelDialog);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -58,7 +72,26 @@ public class MainFrame extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         jTextField6 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
+        outExcelDialog = new javax.swing.JDialog();
         jPanel3 = new javax.swing.JPanel();
+        jLabel8 = new javax.swing.JLabel();
+        jTextField8 = new javax.swing.JTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
+        jButton8 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
+        inExcelDialog = new javax.swing.JDialog();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel10 = new javax.swing.JLabel();
+        jTextField9 = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
+        jTextField10 = new javax.swing.JTextField();
+        jLabel12 = new javax.swing.JLabel();
+        jTextField11 = new javax.swing.JTextField();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
@@ -68,16 +101,27 @@ public class MainFrame extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
+        jTextField12 = new javax.swing.JTextField();
+        jToggleButton1 = new javax.swing.JToggleButton();
         jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
 
         jLabel3.setText("数据库url");
 
+        jTextField3.setText("jTextField3");
+
         jLabel4.setText("帐号");
 
         jLabel5.setText("密码");
+
+        jTextField4.setText("jTextField4");
+
+        jTextField5.setText("jTextField5");
 
         jButton2.setText("取消");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -94,7 +138,6 @@ public class MainFrame extends javax.swing.JFrame {
         });
 
         jLabel7.setText("当前用户");
-
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -135,9 +178,9 @@ public class MainFrame extends javax.swing.JFrame {
                     .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel7)
@@ -161,6 +204,8 @@ public class MainFrame extends javax.swing.JFrame {
         );
 
         jLabel6.setText("文件路径");
+
+        jTextField6.setText("jTextField6");
 
         jButton4.setText("确定");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -201,19 +246,157 @@ public class MainFrame extends javax.swing.JFrame {
         );
         fileOutDialogLayout.setVerticalGroup(
             fileOutDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
+        jLabel8.setText("导出文件位置");
+
+
+        jLabel9.setText("导出SQL");
+
+        jTextArea1.setColumns(20);
+        jTextArea1.setRows(5);
+        jScrollPane1.setViewportView(jTextArea1);
+
+        jButton8.setText("确定");
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        jButton9.setText("取消");
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(22, 22, 22)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(18, 18, 18)
+                        .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 236, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(20, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(71, 71, 71)
+                .addComponent(jButton8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton9)
+                .addGap(67, 67, 67))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 100, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8)
+                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton8)
+                    .addComponent(jButton9))
+                .addContainerGap())
         );
+
+        javax.swing.GroupLayout outExcelDialogLayout = new javax.swing.GroupLayout(outExcelDialog.getContentPane());
+        outExcelDialog.getContentPane().setLayout(outExcelDialogLayout);
+        outExcelDialogLayout.setHorizontalGroup(
+            outExcelDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        outExcelDialogLayout.setVerticalGroup(
+            outExcelDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jLabel10.setText("导入表格");
+
+
+        jLabel11.setText("导入文件位置");
+       
+        jLabel12.setText("导入SQL储存位置");
+
+        jButton6.setText("确定");
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jButton7.setText("取消");
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(25, 25, 25)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel11)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTextField11, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, 291, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(79, 79, 79)
+                .addComponent(jButton6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton7)
+                .addGap(102, 102, 102))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel10))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel11)
+                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel12)
+                    .addComponent(jTextField11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton6)
+                    .addComponent(jButton7))
+                .addContainerGap(18, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout inExcelDialogLayout = new javax.swing.GroupLayout(inExcelDialog.getContentPane());
+        inExcelDialog.getContentPane().setLayout(inExcelDialogLayout);
+        inExcelDialogLayout.setHorizontalGroup(
+            inExcelDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        inExcelDialogLayout.setVerticalGroup(
+            inExcelDialogLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jButton5.setText("jButton5");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -250,30 +433,41 @@ public class MainFrame extends javax.swing.JFrame {
 
         jCheckBox3.setText("update语句");
 
+
+        jToggleButton1.setText("备注");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(22, 22, 22)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(37, 37, 37)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel1)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.TRAILING))
+                            .addComponent(jToggleButton1))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 356, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField12)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jCheckBox2)
-                        .addGap(35, 35, 35)
+                        .addGap(18, 18, 18)
                         .addComponent(jCheckBox1)
-                        .addGap(32, 32, 32)
+                        .addGap(18, 18, 18)
                         .addComponent(jCheckBox3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(39, 39, 39))
+                .addGap(34, 34, 34))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -286,14 +480,38 @@ public class MainFrame extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addGap(16, 16, 16)
+                .addGap(18, 18, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField12, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jCheckBox1)
                     .addComponent(jCheckBox3)
                     .addComponent(jCheckBox2)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addGap(19, 19, 19))
         );
+
+        jMenu4.setText("文件");
+
+        jMenuItem1.setText("导入Excel");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem1);
+
+        jMenuItem4.setText("导出Excel");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
+        jMenu4.add(jMenuItem4);
+
+        jMenuBar1.add(jMenu4);
 
         jMenu2.setText("设置");
         jMenu2.addActionListener(new java.awt.event.ActionListener() {
@@ -330,7 +548,7 @@ public class MainFrame extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -338,12 +556,12 @@ public class MainFrame extends javax.swing.JFrame {
 
 //    数据库确定按钮
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {
-		PropertiesUtil.setValueByKey("jdbc.url",jTextField3.getText());
-		PropertiesUtil.setValueByKey("jdbc.userName",jTextField4.getText());
-		PropertiesUtil.setValueByKey("jdbc.passWord",jTextField5.getText());
-		PropertiesUtil.setValueByKey("tableuser",jTextField7.getText());
+		PropertiesUtil.setValueByKey("jdbc.url",jTextField3.getText().trim());
+		PropertiesUtil.setValueByKey("jdbc.userName",jTextField4.getText().trim());
+		PropertiesUtil.setValueByKey("jdbc.passWord",jTextField5.getText().trim());
+		PropertiesUtil.setValueByKey("tableuser",jTextField7.getText().trim());
         dbSettingDialog.setVisible(false);
-    }                                        
+    }
 //    数据库选取时按钮
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {
     	jTextField3.setText(PropertiesUtil.getValueByKey("jdbc.url"));
@@ -354,7 +572,6 @@ public class MainFrame extends javax.swing.JFrame {
         dbSettingDialog.setResizable(false);
         dbSettingDialog.setVisible(true);
     }                                          
-
     private void jMenu2ActionPerformed(java.awt.event.ActionEvent evt) {                                       
         // TODO add your handling code here:
     }                                      
@@ -367,15 +584,47 @@ public class MainFrame extends javax.swing.JFrame {
     }                                          
 //文件配置确定按钮
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {
-    	System.out.println(jTextField6.getText());
     	PropertiesUtil.setValueByKey("filePath",jTextField6.getText());
         fileOutDialog.setVisible(false);
     }                                        
 //    数据库取消按钮
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         dbSettingDialog.setVisible(false);
-    }                                        
-
+    }
+//    导入文件确定按钮
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {
+    	String user = PropertiesUtil.getValueByKey("tableuser");
+    	String tableName = jTextField9.getText().trim();
+    	String inPath = jTextField10.getText().trim();
+    	PropertiesUtil.setValueByKey("excelInPath",jTextField10.getText().trim());
+    	PropertiesUtil.setValueByKey("sqlStore",jTextField11.getText().trim());
+    	try {
+    		String[] info = excelService.excel2Db(user, tableName, inPath).split(",");
+    		JOptionPane.showMessageDialog(outExcelDialog, "导入新数据"+info[0]+"条，更新旧数据"+info[1]+"条！","提示",JOptionPane.WARNING_MESSAGE);
+    		if(!"".equals(jTextField11.getText().trim())) {
+//    			导入sql增加
+    			List<Object> objs = ExcelUtil.readExcel(inPath);
+    			for (String deleteSql : dbScriptOutputSevice.getDeleteSqls(user,tableName,objs)) {
+    				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),deleteSql);
+				}
+    			for (String insertSql : dbScriptOutputSevice.getInsertSqls(user,tableName,objs)) {
+        			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),insertSql);
+				}
+    			if(objs.size() > 0) {
+    				JOptionPane.showMessageDialog(outExcelDialog, "SQL脚本导入成功！","提示",JOptionPane.WARNING_MESSAGE);
+    			}
+    			
+    		}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(outExcelDialog, "导入失败！","提示",JOptionPane.WARNING_MESSAGE);
+		}
+    	
+    }
+//    导入文件取消按钮
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    	inExcelDialog.setVisible(false);
+    }  
     private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {                                           
         // TODO add your handling code here:
     }                                          
@@ -387,43 +636,108 @@ public class MainFrame extends javax.swing.JFrame {
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
         // TODO add your handling code here:
     }                                           
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+
+	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
+		boolean isRemark =jToggleButton1.isSelected();
     	String tableuser = PropertiesUtil.getValueByKey("tableuser");
     	String tableName = jTextField1.getText();
     	String params = jTextField2.getText();
+    	String regEx="[`!@#$%^&*()+=|{}':;',//[//].<>/?！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
+	    Pattern pattern   =   Pattern.compile(regEx);
+	    Matcher matcher   =   pattern.matcher(params);
+	    params = matcher.replaceAll(",");
     	if(!"".equals(params)) {
-    		String deleteSql = dbScriptOutputSevice.getDeleteSql(tableuser,tableName,params.split(","));
     		if(jCheckBox2.isSelected()) {
-    			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),deleteSql );
+    			String deleteSql = dbScriptOutputSevice.getDeleteSql(tableuser,tableName,params.split(","));
+    			if(!"".equals(deleteSql) && deleteSql != null) {
+    				if(isRemark) {
+    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
+    				}
+    				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),deleteSql );
+            		JOptionPane.showMessageDialog(this, deleteSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
+            	}else{
+            		JOptionPane.showMessageDialog(this, "deleteSql添加失败", "提示",JOptionPane.WARNING_MESSAGE);
+            	}
     		}
-    		String insertSql = dbScriptOutputSevice.getInsertSql(tableuser,tableName,params.split(","));
     		if(jCheckBox1.isSelected()) {
-    			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),insertSql);
+    			String insertSql = dbScriptOutputSevice.getInsertSql(tableuser,tableName,params.split(","));
+    			if(!"".equals(insertSql) && insertSql != null) {
+    				if(isRemark) {
+    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
+    				}
+    				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),insertSql);
+            		JOptionPane.showMessageDialog(this, insertSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
+            	}else{
+            		JOptionPane.showMessageDialog(this, "insertSql添加失败", "提示",JOptionPane.WARNING_MESSAGE);
+            	}
     		}
-    		String updateSql = dbScriptOutputSevice.getUpdateSql(tableuser,tableName,params.split(","));
         	if(jCheckBox3.isSelected()) {
-        		dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),updateSql);
-        	}
-        	if(!"".equals(deleteSql)) {
-        		JOptionPane.showMessageDialog(this, deleteSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
-        	}
-        	if(!"".equals(insertSql)) {
-        		JOptionPane.showMessageDialog(this, insertSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
-        	}
-        	if(!"".equals(updateSql)) {
-        		JOptionPane.showMessageDialog(this, updateSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
+        		String updateSql = dbScriptOutputSevice.getUpdateSql(tableuser,tableName,params.split(","));
+        		if(!"".equals(updateSql) && updateSql != null) {
+        			if(isRemark) {
+    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
+    				}
+        			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),updateSql);
+            		JOptionPane.showMessageDialog(this, updateSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
+            	}else{
+            		JOptionPane.showMessageDialog(this, "updateSql添加失败", "提示",JOptionPane.WARNING_MESSAGE);
+            	}
         	}
     	}
     }
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
+		jTextField10.setText(PropertiesUtil.getValueByKey("excelInPath"));
+		jTextField11.setText(PropertiesUtil.getValueByKey("sqlStore"));
+	    inExcelDialog.setSize(444,220);
+	    inExcelDialog.setResizable(false);
+	    inExcelDialog.setVisible(true);
+    }                                          
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {
+    	jTextField8.setText(PropertiesUtil.getValueByKey("excelOutPath"));
+        outExcelDialog.setSize(379,360);
+        outExcelDialog.setResizable(false);
+        outExcelDialog.setVisible(true);
+    }                                          
+
+//    Sql导出确定按钮
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {
+    	String filePath = jTextField8.getText().trim();
+    	PropertiesUtil.setValueByKey("excelOutPath",filePath);
+    	String sql = jTextArea1.getText().replaceAll(";", "").toUpperCase();
+    	System.out.println(sql);
+    	System.out.println(sql.indexOf("SELECT"));
+    	System.out.println(sql.indexOf("FROM"));
+    	if(sql.indexOf("SELECT") >= 0 && sql.indexOf("FROM") >= 0) {
+    		int successNo = -1;
+    		try {
+    			successNo = excelService.db2ExcelBySql(sql, filePath);
+    			if(successNo > 0) {
+            		JOptionPane.showMessageDialog(outExcelDialog, "成功导出" + successNo + "条数据！","提示",JOptionPane.WARNING_MESSAGE);
+            	}else {
+            		JOptionPane.showMessageDialog(outExcelDialog, "无相关数据！","提示",JOptionPane.WARNING_MESSAGE);
+            	}
+			} catch (Exception e) {
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(outExcelDialog, "导出失败！","提示",JOptionPane.WARNING_MESSAGE);
+			}
+        	
+    	}else {
+    		JOptionPane.showMessageDialog(outExcelDialog, "请输入正确的SQL！","提示",JOptionPane.WARNING_MESSAGE);
+    	}
+    }      
+//  Sql导出取消按钮
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        outExcelDialog.setVisible(false);
+    }  
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                               
+    	outExcelDialog.setVisible(false);
+    }                                              
+
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -454,34 +768,58 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify                     
     private javax.swing.JDialog dbSettingDialog;
     private javax.swing.JDialog fileOutDialog;
+    private javax.swing.JDialog inExcelDialog;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField10;
+    private javax.swing.JTextField jTextField11;
+    private javax.swing.JTextField jTextField12;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
     private javax.swing.JTextField jTextField5;
     private javax.swing.JTextField jTextField6;
     private javax.swing.JTextField jTextField7;
+    private javax.swing.JTextField jTextField8;
+    private javax.swing.JTextField jTextField9;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JDialog outExcelDialog;
     // End of variables declaration                   
 }

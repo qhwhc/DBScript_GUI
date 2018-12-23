@@ -4,16 +4,20 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.junit.Test;
 
 import common.util.AllBeanUtil;
 import common.util.DBConnUtil;
+import common.util.ExcelUtil;
 import dao.impl.DbDaoImpl;
+import service.DBScriptOutputSevice;
 import service.impl.DBScriptOutputSeviceImpl;
 
 public class DBTest {
-
+	private DBScriptOutputSevice dBScriptOutputSevice = new DBScriptOutputSeviceImpl();
 	@Test
 	public void testConnect() {
 		try {
@@ -64,5 +68,29 @@ public class DBTest {
 	@Test
 	public void fileWrite() {
 		new DBScriptOutputSeviceImpl().scriptAppend("D:\\test.txt","hello");
+	}
+	
+	@Test
+	public void regexTest() {
+		String str = "[12332@12|,£¬3.,+ dasd)}";
+		String regEx="[`!@#$%^&*()+=|{}':;',//[//].<>/?£¡@#£¤%¡­¡­&*£¨£©¡ª¡ª+|{}¡¾¡¿¡®£»£º¡±¡°¡¯¡££¬¡¢£¿]";
+	    Pattern pattern   =   Pattern.compile(regEx);
+	    Matcher matcher   =   pattern.matcher(str);
+	    System.out.println(matcher.replaceAll(","));
+	}
+	
+	@Test
+	public void testDeleteSqls(){
+		List<String> sqls = dBScriptOutputSevice.getDeleteSqls("system", "testt1", ExcelUtil.readExcel("d:\\test.xlsx"));
+		for (String string : sqls) {
+			System.out.println(string);
+		}
+		System.out.println(sqls);
+	}
+	
+	@Test
+	public void testInsertSqls(){
+		List<String> sqls = dBScriptOutputSevice.getInsertSqls("system", "testt1", ExcelUtil.readExcel("d:\\test.xlsx"));
+		System.out.println(sqls);
 	}
 }
