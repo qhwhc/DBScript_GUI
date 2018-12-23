@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import common.util.ExcelUtil;
 import common.util.PropertiesUtil;
 import controller.util.UiUtil;
+import doc.doc4Tool;
 import service.DBScriptOutputSevice;
 import service.ExcelService;
 import service.impl.DBScriptOutputSeviceImpl;
@@ -110,6 +111,10 @@ public class MainFrame extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenuItem2 = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
 
         jLabel3.setText("数据库url");
 
@@ -538,6 +543,34 @@ public class MainFrame extends javax.swing.JFrame {
 
         jMenuBar1.add(jMenu2);
 
+        jMenu1.setText("说明");
+
+        jMenuItem5.setText("功能");
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem5);
+
+        jMenuItem6.setText("操作");
+        jMenuItem6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem6ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem6);
+
+        jMenuItem7.setText("注意");
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem7);
+
+        jMenuBar1.add(jMenu1);
+
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -611,13 +644,13 @@ public class MainFrame extends javax.swing.JFrame {
         			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),insertSql);
 				}
     			if(objs.size() > 0) {
-    				JOptionPane.showMessageDialog(outExcelDialog, "SQL脚本导入成功！","提示",JOptionPane.WARNING_MESSAGE);
+    				JOptionPane.showMessageDialog(inExcelDialog, "SQL脚本导入成功！","提示",JOptionPane.WARNING_MESSAGE);
     			}
     			
     		}
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(outExcelDialog, "导入失败！","提示",JOptionPane.WARNING_MESSAGE);
+			JOptionPane.showMessageDialog(inExcelDialog, "导入失败！","提示",JOptionPane.WARNING_MESSAGE);
 		}
     	
     }
@@ -733,7 +766,17 @@ public class MainFrame extends javax.swing.JFrame {
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                               
     	outExcelDialog.setVisible(false);
     }                                              
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        JOptionPane.showMessageDialog(this, doc4Tool.TOOLFUNTION, "提示",JOptionPane.WARNING_MESSAGE);  
+    }                                          
 
+    private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        JOptionPane.showMessageDialog(this, doc4Tool.OPETATOR, "提示",JOptionPane.WARNING_MESSAGE); 
+    }                                          
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        JOptionPane.showMessageDialog(this, doc4Tool.NOTE, "提示",JOptionPane.WARNING_MESSAGE); 
+    } 
     /**
      * @param args the command line arguments
      */
@@ -793,6 +836,7 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
@@ -800,6 +844,9 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
