@@ -680,12 +680,12 @@ public class MainFrame extends javax.swing.JFrame {
 	    Matcher matcher   =   pattern.matcher(params);
 	    params = matcher.replaceAll(",");
     	if(!"".equals(params)) {
+    		if(isRemark) {
+				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
+			}
     		if(jCheckBox2.isSelected()) {
     			String deleteSql = dbScriptOutputSevice.getDeleteSql(tableuser,tableName,params.split(","));
     			if(!"".equals(deleteSql) && deleteSql != null) {
-    				if(isRemark) {
-    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
-    				}
     				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),deleteSql );
             		JOptionPane.showMessageDialog(this, deleteSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
             	}else{
@@ -695,9 +695,6 @@ public class MainFrame extends javax.swing.JFrame {
     		if(jCheckBox1.isSelected()) {
     			String insertSql = dbScriptOutputSevice.getInsertSql(tableuser,tableName,params.split(","));
     			if(!"".equals(insertSql) && insertSql != null) {
-    				if(isRemark) {
-    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
-    				}
     				dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),insertSql);
             		JOptionPane.showMessageDialog(this, insertSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
             	}else{
@@ -707,9 +704,6 @@ public class MainFrame extends javax.swing.JFrame {
         	if(jCheckBox3.isSelected()) {
         		String updateSql = dbScriptOutputSevice.getUpdateSql(tableuser,tableName,params.split(","));
         		if(!"".equals(updateSql) && updateSql != null) {
-        			if(isRemark) {
-    					dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),"--" + format.format(new Date()) + "\t" + jTextField12.getText().trim());
-    				}
         			dbScriptOutputSevice.scriptAppend(PropertiesUtil.getValueByKey("filePath"),updateSql);
             		JOptionPane.showMessageDialog(this, updateSql + "添加成功", "提示",JOptionPane.WARNING_MESSAGE);
             	}else{

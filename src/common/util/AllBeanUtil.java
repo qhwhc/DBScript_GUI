@@ -41,7 +41,7 @@ public class AllBeanUtil {
     	Field[] fields = object.getClass().getDeclaredFields();
         for(Field field : fields) {
         	String key = getRealName(field.getName());
-        	map.put(key, getValue(object,key).toString());
+        	map.put(key, getValue(object,key) != null ? getValue(object,key).toString() : "");
         }
 		return map;
     };
@@ -58,9 +58,9 @@ public class AllBeanUtil {
 				if("VARCHAR2".equals(resultSet.getObject("data_type"))) {
 					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
 				}else if("NUMBER".equals(resultSet.getObject("data_type"))){
-					 properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DECIMAL"));
+					 properties.put(resultSet.getObject("column_name"), Class.forName("java.math.BigDecimal"));
 				}else if("DATE".equals(resultSet.getObject("data_type"))) {
-					properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Types.DATE"));
+					properties.put(resultSet.getObject("column_name"), Class.forName("java.sql.Timestamp"));
 				}else {
 					 properties.put(resultSet.getObject("column_name"), Class.forName("java.lang.String"));
 				}
